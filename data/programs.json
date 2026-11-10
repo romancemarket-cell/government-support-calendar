@@ -1,9 +1,11 @@
 {
-  "updated_at": "2026-11-10T12:52+09:00",
+  "updated_at": "2026-11-10T12:59+09:00",
   "count": 0,
   "items": [],
   "sources": [
     "기업마당 지원사업정보 API"
   ],
-  "errors": []
+  "errors": [
+    "기업마당: HTTP Error 500: Internal Server Error"
+  ]
 }
