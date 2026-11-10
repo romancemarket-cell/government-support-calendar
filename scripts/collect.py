@@ -85,7 +85,7 @@ def main():
     # No sample or fabricated records are inserted.
     uniq={}
     for p in all_items:
-        if p['end_date'] and p['end_date']>=TODAY.isoformat():uniq[p['id']]=p
+        uniq[p['id']] = p
     items=sorted(uniq.values(),key=lambda x:x['end_date'])
     payload={'updated_at':datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).isoformat(timespec='minutes'),'count':len(items),'items':items,'sources':['기업마당 지원사업정보 API'],'errors':errors}
     OUT.parent.mkdir(exist_ok=True)
