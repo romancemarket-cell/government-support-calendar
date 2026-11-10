@@ -25,6 +25,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/programs.json
           git diff --cached --quiet || git commit -m "Daily support program data update"
+          git pull origin main --rebase
           git push
       - name: Configure Pages
         uses: actions/configure-pages@v5
