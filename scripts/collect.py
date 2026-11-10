@@ -74,7 +74,7 @@ def normalize(d,source):
 def bizinfo():
     key=os.getenv('BIZINFO_API_KEY','').strip()
     if not key:return []
-    data=get_json('https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do',{'crtfcKey':key,'dataType':'json','searchCnt':'0'})
+    data=get_json('https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do',{'crtfcKey':key,'dataType':'json','searchCnt':'100'})
     return [x for x in (normalize(d,'기업마당') for d in find_records(data)) if x]
 
 def main():
