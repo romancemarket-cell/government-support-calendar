@@ -2,7 +2,7 @@ import os, json, re, urllib.parse, urllib.request, datetime, pathlib, sys
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 OUT=ROOT/'data'/'programs.json'
 TODAY=datetime.date.today()
-EXCLUDE=re.compile(r'대출|융자|이차보전|보증서|정책자금|운전자금|시설자금|금리우대')
+EXCLUDE=re.compile(r'대출|융자|보증서|금리우대')
 
 def get_json(url, params):
     req=url+'?'+urllib.parse.urlencode(params)
