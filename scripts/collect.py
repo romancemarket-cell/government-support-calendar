@@ -79,17 +79,28 @@ def normalize(d, source):
     if EXCLUDE.search(title + ' ' + blob):
         return None
         
-    start_raw = pick(d, 'reqstBeginDe', 'pbanc_rcpt_bgng_dt', 'startDate', 'beginDate', '접수시작일', '신청시작일')
-    end_raw = pick(d, 'reqstEndDe', 'pbanc_rcpt_end_dt', 'endDate', 'closeDate', '접수마감일', '신청마감일')
-    
-    start = date_norm(start_raw)
-    end = date_norm(end_raw)
-    
-    # 마감일이 파싱되지 않더라도 공고가 누락되지 않도록 오늘 날짜 등으로 기본값 지정
-    if not end:
-        end = TODAY.isoformat()
+    # 기업마당 API의 'reqstBeginEndDe' (예: "2026-11-16 ~ 2026-11-18") 파싱
+    range_str = pick(d, 'reqstBeginEndDe', 'rcpt_bgng_end_de', 'dateRange')
+    start, end = '', ''
+    if range_str:
+        dates = re.findall(r'20\d{2}[-./년 ]?\d{1,2}[-./월 ]?\d{1,2}', range_str)
+        if len(dates) >= 2:
+            start = date_norm(dates[0])
+            end = date_norm(dates[1])
+        elif len(dates) == 1:
+            start = date_norm(dates[0])
+            end = date_norm(dates[0])
+            
     if not start:
-        start = TODAY.isoformat()
+        start = date_norm(pick(d, 'reqstBeginDe', 'pbanc_rcpt_bgng_dt', 'startDate', 'beginDate', '접수시작일', '신청시작일'))
+    if not end:
+        end = date_norm(pick(d, 'reqstEndDe', 'pbanc_rcpt_end_dt', 'endDate', 'closeDate', '접수마감일', '신청마감일'))
+        
+    # 마감일이 없는 공고는 날짜별 캘린더 배치 불가하므로 제외
+    if not end:
+        return None
+    if not start:
+        start = end
         
     url = pick(d, 'pblancUrl', 'detailUrl', 'url', 'dtl_url', 'biz_pbanc_url', '공고URL', '상세URL', 'link')
     if url and url.startswith('//'):
@@ -132,7 +143,6 @@ def main():
         
     uniq = {}
     for p in all_items:
-        # 날짜 조건에 관계없이 수집된 모든 공고를 담도록 변경
         uniq[p['id']] = p
         
     items = sorted(uniq.values(), key=lambda x: x['end_date'])
